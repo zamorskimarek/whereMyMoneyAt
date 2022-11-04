@@ -55,6 +55,12 @@ const DUMMY_EXPENSES = [
     amount: 18.59,
     date: new Date("2022-02-18"),
   },
+  {
+    id: "e10",
+    description: "A book",
+    amount: 18.59,
+    date: new Date("2022-10-31"),
+  },
 ];
 
 export const ExpenseContext = createContext({
@@ -64,7 +70,7 @@ export const ExpenseContext = createContext({
   updateExpense: (id, { description, amount, date }) => {},
 });
 
-function expensesReducer({ state, action }) {
+function expensesReducer(state, action) {
   switch (action.type) {
     case "ADD":
       const id = new Date().toString() + Math.random().toString();
@@ -85,7 +91,7 @@ function expensesReducer({ state, action }) {
   }
 }
 
-function ExpensesFunctionProvider({ children }) {
+function ExpensesContextProvider({ children }) {
   const [expensesState, dispatch] = useReducer(expensesReducer, DUMMY_EXPENSES);
 
   function addExpense(expanseData) {
@@ -106,7 +112,16 @@ function ExpensesFunctionProvider({ children }) {
     });
   }
 
-  return <ExpenseContext.Provider>{children}</ExpenseContext.Provider>;
+  const value = {
+    expenses: expensesState,
+    addExpense: addExpense,
+    deleteExpense: deleteExpense,
+    updateExpense: updateExpense,
+  };
+
+  return (
+    <ExpenseContext.Provider value={value}>{children}</ExpenseContext.Provider>
+  );
 }
 
-export default ExpensesFunctionProvider;
+export default ExpensesContextProvider;
